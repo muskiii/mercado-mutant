@@ -6,6 +6,7 @@ import compression from 'compression';
 import cors from 'cors';
 
 import mutantRoutes from './routes/mutantRoutes';
+import statsRoutes from './routes/statsRoutes';
 
 // process.env.MONGODB_URL = "mongodb://admin:4dm1npa55@ds143156.mlab.com:43156/mercado-mutant"
 
@@ -39,6 +40,7 @@ class Server {
 
     public routes(): void {
         this.app.use('/', mutantRoutes);
+        this.app.use('/', statsRoutes);
     }
 
     public start(): void {

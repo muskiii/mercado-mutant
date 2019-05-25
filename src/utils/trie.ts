@@ -6,6 +6,7 @@ export interface MatchResult {
   
     /**
      * There are items with this prefix.
+     * Although i dont really need it for this particular case.
      */
     hasMore: boolean;
   }
