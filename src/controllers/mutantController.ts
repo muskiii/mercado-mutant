@@ -33,7 +33,7 @@ class MutantController {
                     return res.status(200).send();
                 } else {
                     console.log("Found a Human in Redis")
-                    return res.status(302).send();
+                    return res.status(403).send();
                 }
             } else {
                 Human.findOne({ hash })
@@ -45,7 +45,7 @@ class MutantController {
                                 return res.status(200).send();
                             } else {
                                 console.log("Found a Human in DB")
-                                return res.status(302).send();
+                                return res.status(403).send();
                             }
                         } else {
                             //NEW Human
@@ -62,7 +62,7 @@ class MutantController {
                                 return res.status(200).send();
                             } else {
                                 console.log("Found a Human");
-                                return res.status(302).send();
+                                return res.status(403).send();
                             }
                         }
                     })
