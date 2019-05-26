@@ -6,6 +6,7 @@ var endpoint = process.argv[2];
 var connections = process.argv[3];
 var duration = process.argv[4];
 
+console.log("server is under siege...")
 autocannon(
   {
     title: "stats",

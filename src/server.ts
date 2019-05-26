@@ -19,8 +19,6 @@ class Server {
     }
 
     public config(): void {
-        var os = require('os');
-        console.log("Number of processors => ",os.cpus().length);
         const REDIS_URL = "redis://h:p9049179e6eefb134b2515deb5e195971be781e6b4336ba04323d320d6dd803a4@ec2-3-218-28-187.compute-1.amazonaws.com:16259";
         const MONGO_URI = 'mongodb://localhost/mercado-mutant';
 

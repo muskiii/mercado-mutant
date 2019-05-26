@@ -4,8 +4,9 @@
   "description": "interview puzzle for mercadolibre",
   "main": "app.js",
   "scripts": {
-    "start": "node --inspect=5858 -r ts-node/register ./src/server.ts",
-    "start:watch": "nodemon",
+    "start": "node ./build/server.js",
+    "dev": "node --inspect=5858 -r ts-node/register ./src/server.ts",
+    "dev:watch": "nodemon",
     "build-ts": "tsc",
     "test": "jest --coverage",
     "postinstall": "npm run build-ts"
@@ -46,6 +47,7 @@
     "helmet": "^3.15.0",
     "mongoose": "^5.3.15",
     "morgan": "^1.9.1",
+    "pm2": "^3.5.1",
     "redis": "^2.8.0",
     "ts-node": "^8.1.0",
     "typescript": "^3.2.1"
