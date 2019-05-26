@@ -19,8 +19,10 @@ class MutantRouter {
 
     validateDna(dna: any) {
         if (Array.isArray(dna)) {
+            let length = dna[0].length;
             dna.forEach(sequence => {
-                if (typeof sequence !== "string")
+                
+                if (typeof sequence !== "string" || sequence.length != length)
                     throw new Error('Invalid Input');
                 if (!/^[A|T|C|G]+$/.test(sequence))
                     throw new Error('Invalid caracter in de sequence');
