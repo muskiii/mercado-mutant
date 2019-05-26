@@ -7,7 +7,8 @@ import cors from 'cors';
 import redis from "redis";
 
 import MutantRoutes from './routes/mutantRoutes';
-import StatsRouter from './routes/statsRoutes';
+import StatsRouter from './routes/stasRoutes';
+import RedisService from './services/redis';
 
 class Server {
     public app: express.Application;
@@ -18,10 +19,11 @@ class Server {
     }
 
     public config(): void {
+        var os = require('os');
+        console.log("Number of processors => ",os.cpus().length);
         const REDIS_URL = "redis://h:p9049179e6eefb134b2515deb5e195971be781e6b4336ba04323d320d6dd803a4@ec2-3-218-28-187.compute-1.amazonaws.com:16259";
-
-
         const MONGO_URI = 'mongodb://localhost/mercado-mutant';
+
         mongoose.set('useFindAndModify', false);
         mongoose.set('debug', true);
         mongoose.connect(process.env.MONGODB_URI || MONGO_URI, {
@@ -30,7 +32,7 @@ class Server {
         }).then(db => {
             console.log("DB is connected");
 
-            const client: redis.RedisClient = redis.createClient(process.env.REDIS_URL || REDIS_URL);
+            const client: redis.RedisClient = redis.createClient(process.env.REDIS_URL || REDIS_URL);            
             client.on("connect", () => {
                 console.log("REDIS is connected");
                 client.flushall(()=>console.log("REDIS FLUSHALL"));
@@ -50,8 +52,9 @@ class Server {
     }
 
     public routes(client: redis.RedisClient): void {
-        this.app.use('/', new MutantRoutes(client).router);
-        this.app.use('/', new StatsRouter(client).router);
+        let redisService = new RedisService(client);
+        this.app.use('/', new MutantRoutes(redisService).router);
+        this.app.use('/', new StatsRouter(redisService).router);
     }
 
     public start(): void {

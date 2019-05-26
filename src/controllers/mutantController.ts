@@ -1,18 +1,15 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator/check';
-import testGrups from '../utils/testGroup';
 import { isMutant } from "../utils/sentinel";
 import Human from '../models/Human';
 import Crypto from 'crypto-js';
-import redis from 'redis';
-import { json } from 'body-parser';
-
+import RedisService from '../services/redis';
 
 class MutantController {
-    client: redis.RedisClient;
+    redisService: RedisService;
 
-    constructor(client: redis.RedisClient) {
-        this.client = client;
+    constructor(redisService: RedisService) {      
+        this.redisService = redisService;
     }
 
     analyze = (req: Request, res: Response): void => {
@@ -23,9 +20,10 @@ class MutantController {
         }
 
         let { dna } = req.body;
-        const result = isMutant(dna, testGrups, 2);
+        const result = isMutant(dna);
         let hash = Crypto.SHA256(dna.join("")).toString();
-        this.client.get(hash, (err, human) => {
+        
+        this.redisService.getHuman(hash).then((human) => {
             //REDIS Human
             if (human && typeof JSON.parse(human) != 'undefined') {
                 let isMutant = JSON.parse(human).isMutant;
@@ -56,26 +54,9 @@ class MutantController {
                             human.hash = hash;
                             human.isMutant = result;
                             human.save();
-                            this.client.set(hash, JSON.stringify({ isMutant: result }))
-                            this.client.get("mutantStats", (err, stats) => {
-                                if (stats) {
-                                    let jsonStats = JSON.parse(stats);
-                                    if (human.isMutant){
-                                        jsonStats.count_mutant_dna++;
-                                    }else{
-                                        jsonStats.count_human_dna++;
-                                    }
-                                    if (jsonStats.count_human_dna > 0){
-                                        jsonStats.ratio = parseFloat((jsonStats.count_mutant_dna / jsonStats.count_human_dna).toFixed(1));
-                                    }else{
-                                        jsonStats.ratio = jsonStats.count_mutant_dna;
-                                    }
-                                    this.client.set("mutantStats", JSON.stringify(jsonStats))
-                                } else {
-                                    console.log("Stats were not Initialized");
-                                }
-                    
-                            });
+                            this.redisService.storeHuman(human.hash, human.isMutant);
+                            this.redisService.updateStats(human.isMutant);
+
                             if (result) {                                
                                 console.log("found a Mutant");                               
                                 return res.status(200).send();

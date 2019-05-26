@@ -1,14 +1,14 @@
 import { Router } from 'express';
 import { check } from 'express-validator/check';
 import MutantController from '../controllers/mutantController';
-import redis from "redis";
+import RedisService from '../services/redis';
 
 class MutantRouter {
     mutantController : MutantController;
     router: Router;
 
-    constructor(client: redis.RedisClient) {
-        this.mutantController = new MutantController(client)
+    constructor(redisService: RedisService) {
+        this.mutantController = new MutantController(redisService);
         this.router = Router();
         this.routes();
     }
