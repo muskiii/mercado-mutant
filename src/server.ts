@@ -29,7 +29,7 @@ class Server {
         const MONGO_URI = 'mongodb://localhost/mercado-mutant';
         mongoose.set('useFindAndModify', false);
         mongoose.set('debug', true);
-        mongoose.connect(process.env.MONGODB_URL || MONGO_URI, {
+        mongoose.connect(process.env.MONGODB_URI || MONGO_URI, {
             useNewUrlParser: true,
             useCreateIndex: true            
         }).then(db => console.log("DB is connected"));
