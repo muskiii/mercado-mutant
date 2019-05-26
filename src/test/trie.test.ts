@@ -1,4 +1,4 @@
-import { TrieNode } from "../utils/trie";
+import { TrieNode } from "../search/trie";
 
 const trie = new TrieNode();
 trie.add("AAAA");

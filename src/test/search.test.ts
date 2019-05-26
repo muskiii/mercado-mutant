@@ -1,4 +1,4 @@
-import { isMutant } from "../utils/sentinel";
+import { isMutant } from "../search/sentinel";
 
 let mutantSequence = ["ATGCGA", "CAGTGC", "TTATGT", "AGAAGG", "CCCCTA", "TCACTG"];
 let mutantData = { name: "mutant", rows: mutantSequence};

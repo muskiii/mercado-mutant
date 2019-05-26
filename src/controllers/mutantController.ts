@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator/check';
-import { isMutant } from "../utils/sentinel";
+import { isMutant } from "../search/sentinel";
 import Human from '../models/Human';
 import Crypto from 'crypto-js';
 import RedisService from '../services/redis';
