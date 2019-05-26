@@ -19,20 +19,23 @@ class Server {
 
     public config(): void {
         const REDIS_URL = "redis://h:p9049179e6eefb134b2515deb5e195971be781e6b4336ba04323d320d6dd803a4@ec2-3-218-28-187.compute-1.amazonaws.com:16259";
-        const client: redis.RedisClient = redis.createClient( process.env.REDIS_URL || REDIS_URL);
 
-        client.on("connect", () => {
-            console.log("REDIS is connected");
-            this.routes(client);
-        });
 
         const MONGO_URI = 'mongodb://localhost/mercado-mutant';
         mongoose.set('useFindAndModify', false);
         mongoose.set('debug', true);
         mongoose.connect(process.env.MONGODB_URI || MONGO_URI, {
             useNewUrlParser: true,
-            useCreateIndex: true            
-        }).then(db => console.log("DB is connected"));
+            useCreateIndex: true
+        }).then(db => {
+            console.log("DB is connected");
+            
+            const client: redis.RedisClient = redis.createClient(process.env.REDIS_URL || REDIS_URL);
+            client.on("connect", () => {
+                console.log("REDIS is connected");
+                this.routes(client);
+            });
+        });
 
         // Settings
         this.app.set('port', process.env.PORT || 5000);
