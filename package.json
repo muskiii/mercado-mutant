@@ -7,7 +7,7 @@
     "start": "node --inspect=5858 -r ts-node/register ./src/server.ts",
     "start:watch": "nodemon",
     "build-ts": "tsc",
-    "test": "jest",
+    "test": "jest --coverage",
     "postinstall": "npm run build-ts"
   },
   "repository": {
@@ -31,7 +31,8 @@
     "@types/node": "^10.12.12",
     "jest": "^24.8.0",
     "nodemon": "^1.18.7",
-    "ts-jest": "^24.0.2"    
+    "source-map-support": "^0.5.12",
+    "ts-jest": "^24.0.2"
   },
   "dependencies": {
     "@types/crypto-js": "^3.1.43",
