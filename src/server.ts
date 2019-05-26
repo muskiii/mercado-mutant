@@ -4,11 +4,10 @@ import morgan from 'morgan';
 import helmet from 'helmet';
 import compression from 'compression';
 import cors from 'cors';
+import redis from "redis";
 
-import mutantRoutes from './routes/mutantRoutes';
-import statsRoutes from './routes/statsRoutes';
-
-// process.env.MONGODB_URL = "mongodb://admin:4dm1npa55@ds143156.mlab.com:43156/mercado-mutant"
+import MutantRoutes from './routes/mutantRoutes';
+import StatsRouter from './routes/statsRoutes';
 
 class Server {
     public app: express.Application;
@@ -16,15 +15,23 @@ class Server {
     constructor() {
         this.app = express();
         this.config();
-        this.routes();
     }
 
     public config(): void {
+        const REDIS_URL = "redis://h:p9049179e6eefb134b2515deb5e195971be781e6b4336ba04323d320d6dd803a4@ec2-3-218-28-187.compute-1.amazonaws.com:16259";
+        const client: redis.RedisClient = redis.createClient( process.env.REDIS_URL || REDIS_URL);
+
+        client.on("connect", () => {
+            console.log("REDIS is connected");
+            this.routes(client);
+        });
+
         const MONGO_URI = 'mongodb://localhost/mercado-mutant';
         mongoose.set('useFindAndModify', false);
-        mongoose.connect(MONGO_URI || process.env.MONGODB_URL, {
+        mongoose.set('debug', true);
+        mongoose.connect(process.env.MONGODB_URL || MONGO_URI, {
             useNewUrlParser: true,
-            useCreateIndex: true
+            useCreateIndex: true            
         }).then(db => console.log("DB is connected"));
 
         // Settings
@@ -38,9 +45,9 @@ class Server {
         this.app.use(cors());
     }
 
-    public routes(): void {
-        this.app.use('/', mutantRoutes);
-        this.app.use('/', statsRoutes);
+    public routes(client: redis.RedisClient): void {
+        this.app.use('/', new MutantRoutes(client).router);
+        this.app.use('/', new StatsRouter(client).router);
     }
 
     public start(): void {

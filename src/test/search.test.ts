@@ -1,5 +1,5 @@
 import testGrups from '../utils/testGroup'
-import { isMutant } from "../utils/prefix";
+import { isMutant } from "../utils/sentinel";
 
 let mutantSequence = ["ATGCGA", "CAGTGC", "TTATGT", "AGAAGG", "CCCCTA", "TCACTG"];
 let mutantData = { name: "mutant", rows: mutantSequence, words: testGrups };

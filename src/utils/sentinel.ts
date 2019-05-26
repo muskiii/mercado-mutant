@@ -2,10 +2,6 @@
 import { Directions, Displacement } from "./directions";
 import { TrieNode } from "./trie";
 
-interface Match {
-  word: string;
-}
-
 export function isMutant(
   rows: string[],
   words: string[],
@@ -17,7 +13,7 @@ export function isMutant(
     trie.add(word);
   }
 
-  const matches: Match[] = [];
+  const matches: String[] = [];
   let mutantFound = false;
 
   for (let startRowIdx = 0; startRowIdx < rows.length; startRowIdx++) {
@@ -44,9 +40,7 @@ export function isMutant(
           }
 
           if (result.isComplete) {
-            matches.push({
-              word: seen
-            });
+            matches.push(seen);
             if (matches.length == assertions) {
               mutantFound = true;
             }

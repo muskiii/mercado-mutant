@@ -1,17 +1,20 @@
 import { Router } from 'express';
 import { check } from 'express-validator/check';
-import { analyze } from '../controllers/mutantController';
+import MutantController from '../controllers/mutantController';
+import redis from "redis";
 
 class MutantRouter {
+    mutantController : MutantController;
     router: Router;
 
-    constructor() {
+    constructor(client: redis.RedisClient) {
+        this.mutantController = new MutantController(client)
         this.router = Router();
         this.routes();
     }
 
     routes() {
-        this.router.post('/mutant/', check('dna').custom(this.validateDna), analyze);
+        this.router.post('/mutant/', check('dna').custom(this.validateDna), this.mutantController.analyze);
     }
 
     validateDna(dna: any) {
@@ -29,5 +32,4 @@ class MutantRouter {
     }
 }
 
-const mutantRouter = new MutantRouter();
-export default mutantRouter.router;
+export default MutantRouter;
