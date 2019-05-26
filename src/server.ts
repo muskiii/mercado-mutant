@@ -29,10 +29,11 @@ class Server {
             useCreateIndex: true
         }).then(db => {
             console.log("DB is connected");
-            
+
             const client: redis.RedisClient = redis.createClient(process.env.REDIS_URL || REDIS_URL);
             client.on("connect", () => {
                 console.log("REDIS is connected");
+                client.flushall(()=>console.log("REDIS FLUSHALL"));
                 this.routes(client);
             });
         });
