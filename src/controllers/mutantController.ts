@@ -23,14 +23,8 @@ class MutantController {
         }
 
         let { dna } = req.body;
-        console.log(dna)
-
         const result = isMutant(dna, testGrups, 2);
-        console.log(result);
-
         let hash = Crypto.SHA256(dna.join("")).toString();
-        console.log(hash);
-
         this.client.get(hash, (err, human) => {
             //REDIS Human
             if (human && typeof JSON.parse(human) != 'undefined') {
@@ -71,7 +65,11 @@ class MutantController {
                                     }else{
                                         jsonStats.count_human_dna++;
                                     }
-                                    jsonStats.ratio = parseFloat((jsonStats.count_mutant_dna / jsonStats.count_human_dna).toFixed(1));
+                                    if (jsonStats.count_human_dna > 0){
+                                        jsonStats.ratio = parseFloat((jsonStats.count_mutant_dna / jsonStats.count_human_dna).toFixed(1));
+                                    }else{
+                                        jsonStats.ratio = jsonStats.count_mutant_dna;
+                                    }
                                     this.client.set("mutantStats", JSON.stringify(jsonStats))
                                 } else {
                                     console.log("Stats were not Initialized");
